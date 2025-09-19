@@ -1,16 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Subscribe Form</title>
-  <link
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
   <style>
     .form-container {
       max-width: 500px;
@@ -34,71 +28,61 @@
     .btn-subscribe:hover {
       background-color: #45a049;
     }
+    .thank-you {
+      display: none;
+      text-align: center;
+      margin-top: 15px;
+      color: #4CAF50;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body class="bg-light">
+
   <div class="container">
     <div class="form-container">
       <h3>Subscribe to our Newsletter</h3>
 
       <!-- FORM -->
-      <form
+      <form id="subscribeForm"
         action="https://docs.google.com/forms/d/e/1FAIpQLSfCcnNmQfo2PqUhjXAMIrFHTf1IGxA7DfRHQN3YgVnOBedz5A/formResponse"
-        method="POST"
-        target="hidden_iframe"
-      >
+        method="POST" 
+        target="hidden_iframe">
+
         <!-- Name -->
         <div class="form-group">
-          <input
-            class="form-control"
-            type="text"
-            name="entry.2005620554"
-            placeholder="First Name"
-            required
-          />
+          <input class="form-control" type="text" name="entry.2005620554" placeholder="First Name" required />
         </div>
         <!-- Last Name -->
         <div class="form-group">
-          <input
-            class="form-control"
-            type="text"
-            name="entry.1625289766"
-            placeholder="Last Name"
-            required
-          />
+          <input class="form-control" type="text" name="entry.1625289766" placeholder="Last Name" required />
         </div>
         <!-- Email -->
         <div class="form-group">
-          <input
-            class="form-control"
-            type="email"
-            name="entry.1045781291"
-            placeholder="Email"
-            required
-          />
+          <input class="form-control" type="email" name="entry.1045781291" placeholder="Email" required />
         </div>
         <!-- Phone Number -->
         <div class="form-group">
-          <input
-            class="form-control"
-            type="text"
-            name="entry.1166974658"
-            placeholder="Phone Number"
-            required
-          />
+          <input class="form-control" type="text" name="entry.1166974658" placeholder="Phone Number" required />
         </div>
 
-        <button type="submit" class="btn btn-subscribe btn-block">
-          Subscribe
-        </button>
+        <button type="submit" class="btn btn-subscribe btn-block">Subscribe</button>
       </form>
+
+      <!-- Thank you message -->
+      <div class="thank-you" id="thankYouMsg">✅ Thank you! You’ve successfully subscribed.</div>
+
       <!-- Hidden iframe -->
-      <iframe
-        name="hidden_iframe"
-        id="hidden_iframe"
-        style="display:none;"
-      ></iframe>
+      <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="showThankYou()"></iframe>
     </div>
   </div>
+
+  <script>
+    function showThankYou() {
+      // jab iframe load hota hai (form submit hone ke baad)
+      document.getElementById('subscribeForm').style.display = 'none';
+      document.getElementById('thankYouMsg').style.display = 'block';
+    }
+  </script>
 </body>
 </html>
