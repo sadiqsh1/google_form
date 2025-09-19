@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subscribe Form</title>
+  <link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <style>
+    .form-container {
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 30px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    .form-container h3 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+    .btn-subscribe {
+      background-color: #4CAF50;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+    }
+    .btn-subscribe:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body class="bg-light">
+  <div class="container">
+    <div class="form-container">
+      <h3>Subscribe to our Newsletter</h3>
+
+      <!-- FORM -->
+      <form
+        action="https://docs.google.com/forms/d/e/1FAIpQLSfCcnNmQfo2PqUhjXAMIrFHTf1IGxA7DfRHQN3YgVnOBedz5A/formResponse"
+        method="POST"
+        target="hidden_iframe"
+      >
+        <!-- Name -->
+        <div class="form-group">
+          <input
+            class="form-control"
+            type="text"
+            name="entry.2005620554"
+            placeholder="First Name"
+            required
+          />
+        </div>
+        <!-- Last Name -->
+        <div class="form-group">
+          <input
+            class="form-control"
+            type="text"
+            name="entry.1625289766"
+            placeholder="Last Name"
+            required
+          />
+        </div>
+        <!-- Email -->
+        <div class="form-group">
+          <input
+            class="form-control"
+            type="email"
+            name="entry.1045781291"
+            placeholder="Email"
+            required
+          />
+        </div>
+        <!-- Phone Number -->
+        <div class="form-group">
+          <input
+            class="form-control"
+            type="text"
+            name="entry.1166974658"
+            placeholder="Phone Number"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn-subscribe btn-block">
+          Subscribe
+        </button>
+      </form>
+      <!-- Hidden iframe -->
+      <iframe
+        name="hidden_iframe"
+        id="hidden_iframe"
+        style="display:none;"
+      ></iframe>
+    </div>
+  </div>
+</body>
+</html>
