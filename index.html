@@ -18,41 +18,38 @@
   <div class="form-container">
     <h3>Subscribe to our Newsletter</h3>
 
-    <form id="gform" 
-          action="https://docs.google.com/forms/d/e/1FAIpQLSfCcnNmQfo2PqUhjXAMIrFHTf1IGxA7DfRHQN3YgVnOBedz5A/formResponse" 
-          method="POST" target="hidden_iframe">
-
-      <!-- First Name -->
+    <form id="subscribeForm">
       <div class="form-group">
-        <input class="form-control" type="text" name="entry.2005620554" placeholder="Your Name" required>
+        <input class="form-control" type="text" name="name" placeholder="Your Name" required>
       </div>
 
-      <!-- Email -->
       <div class="form-group">
-        <input class="form-control" type="email" name="entry.1045781291" placeholder="Email" required>
+        <input class="form-control" type="email" name="email" placeholder="Email" required>
       </div>
 
-      <!-- Phone Number -->
       <div class="form-group">
-        <input class="form-control" type="text" name="entry.1166974658" placeholder="Phone Number" required>
+        <input class="form-control" type="text" name="phone" placeholder="Phone Number" required>
       </div>
 
       <button class="btn btn-sub btn-block" type="submit">Subscribe</button>
     </form>
 
     <div class="thank" id="ty">✅ Thank you! You’ve successfully subscribed.</div>
-
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="onIframeLoad()"></iframe>
   </div>
 
   <script>
-    var alreadySubmitted = false;
-    document.getElementById('gform').addEventListener('submit', function(){ alreadySubmitted = true; });
-    function onIframeLoad() {
-      if(!alreadySubmitted) return;
-      document.getElementById('gform').style.display = 'none';
-      document.getElementById('ty').style.display = 'block';
-    }
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwceNsu8hKMA3Tevep9f1J3aLK8-KzGLboV4SB7gYFV4fMFCeOnjBtFyc21DNUjxpbj/exec"; // <-- yahan apna Apps Script URL paste karo
+    const form = document.getElementById('subscribeForm');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        .then(response => {
+          form.style.display = 'none';
+          document.getElementById('ty').style.display = 'block';
+        })
+        .catch(error => alert('Error! ' + error.message));
+    });
   </script>
 </body>
 </html>
