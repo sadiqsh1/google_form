@@ -89,19 +89,16 @@
     <h2>Submit Your Info</h2>
     <form id="googleForm" novalidate>
       <label for="name">Name</label>
-      <!-- updated entry ID -->
       <input type="text" id="name" name="entry.1779204458" required>
       <div class="error" id="nameError">Name must be at least 2 letters and contain only alphabets</div>
 
       <label for="email">Email</label>
-      <!-- updated entry ID -->
       <input type="email" id="email" name="entry.1349952710" required>
       <div class="error" id="emailError">Enter a valid email address</div>
 
       <label for="phone">Phone</label>
-      <!-- updated entry ID -->
       <input type="tel" id="phone" name="entry.1697909279" required>
-      <div class="error" id="phoneError">Phone must be 10–15 digits</div>
+      <div class="error" id="phoneError">Phone must be in international format (only +, digits and spaces)</div>
 
       <button type="submit">Submit</button>
     </form>
@@ -149,7 +146,7 @@
 
     function validatePhone() {
       const value = phoneInput.value.trim();
-      const phonePattern = /^[0-9]{10,15}$/;
+      const phonePattern = /^\+?[0-9 ]{10,20}$/; // allow +, digits and spaces
       if (!phonePattern.test(value)) {
         phoneError.style.display = "block";
         return false;
