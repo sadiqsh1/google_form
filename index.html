@@ -6,105 +6,184 @@
 <title>Form with Bootstrap</title>
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
 <style>
-  body {
-    background: #f8f9fa;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  .form-container {
-    max-width: 500px;
-    margin: auto;
-    margin-top: 80px;
-    padding: 30px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    background-color: #fff;
-    border-radius: 12px;
-    text-align: center;
-    animation: fadeIn 1s ease-in-out;
-  }
-  h4 {
-    font-weight: bold;
-    color: #333;
-  }
-  .btn-custom {
-    background: #007bff;
-    border: none;
-    color: #fff;
-    font-weight: bold;
-    transition: all 0.3s ease;
-  }
-  .btn-custom:hover {
-    background: #0056b3;
-    transform: scale(1.03);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-  .thank-you {
-    display: none;
-    font-size: 20px;
-    font-weight: bold;
-    color: #28a745;
-    margin-top: 20px;
-    animation: fadeIn 1s ease-in-out;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  body { background: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  .form-container{ max-width:500px;margin:80px auto;padding:30px;box-shadow:0 6px 20px rgba(0,0,0,0.15);background:#fff;border-radius:12px;text-align:center; }
+  h4{ font-weight:700;color:#333;margin-bottom:18px; }
+  .btn-custom{ background:#007bff;border:none;color:#fff;font-weight:700; }
+  .invalid-feedback{ display:none; }
+  .is-invalid + .invalid-feedback{ display:block; }
+  .thank-you{ display:none;color:#28a745;font-weight:700;margin-top:18px; }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="form-container">
-    <h4 class="mb-4">Submit Your Info</h4>
-    <form id="submit-to-google-sheet">
-      <!-- Full Name -->
+    <h4>Submit Your Info</h4>
+    <form id="submit-to-google-sheet" novalidate>
+      <!-- Full Name: only letters & spaces -->
       <div class="form-group text-left">
         <label for="name">Full Name:</label>
-        <input class="form-control" type="text" name="entry.1779204458" id="name" placeholder="Enter your name" required />
+        <input class="form-control" type="text" id="name" name="entry.1779204458" placeholder="Enter your name" required minlength="2" />
+        <div class="invalid-feedback" id="name-error"></div>
       </div>
 
       <!-- Email -->
       <div class="form-group text-left">
         <label for="email">Email:</label>
-        <input class="form-control" type="email" name="entry.1349952710" id="email" placeholder="Enter your email" required />
+        <input class="form-control" type="email" id="email" name="entry.1349952710" placeholder="Enter your email" required />
+        <div class="invalid-feedback" id="email-error"></div>
       </div>
 
-      <!-- Phone -->
+      <!-- Date: today or future only -->
       <div class="form-group text-left">
-        <label for="phone">Phone Number:</label>
-        <input class="form-control" type="tel" name="entry.1697909279" id="phone" placeholder="Enter phone number" />
+        <label for="date">Select Date (Today or Future):</label>
+        <input class="form-control" type="date" id="date" name="entry.DATE_ID" required />
+        <div class="invalid-feedback" id="date-error"></div>
       </div>
 
-      <button type="submit" class="btn btn-custom btn-block">Submit</button>
+      <!-- Phone (optional) -->
+      <div class="form-group text-left">
+        <label for="phone">Phone Number (optional):</label>
+        <input class="form-control" type="tel" id="phone" name="entry.1697909279" placeholder="Enter phone number" />
+        <div class="invalid-feedback" id="phone-error"></div>
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn btn-custom btn-block">Submit</button>
     </form>
 
-    <div id="thank-you" class="thank-you">
-      ✅ Thank you! Your response has been submitted.
-    </div>
+    <div id="thank-you" class="thank-you">✅ Thank you! Your response has been submitted.</div>
   </div>
 </div>
 
 <script>
-  // 🔹 your Google Form POST URL here:
+  // Google Form POST URL (agar Google Form use kar rahe ho to yeh URL rahega)
   const scriptURL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSfUy512ACAXBl22tZ0q-SDNN-coyjXKYDO3qa4UPrnCUInVCQ/formResponse";
-  
-  const form = document.getElementById("submit-to-google-sheet");
-  const thankYou = document.getElementById("thank-you");
-  const submitBtn = form.querySelector("button[type=submit]");
 
-  form.addEventListener("submit", function (e) {
+  const form = document.getElementById('submit-to-google-sheet');
+  const submitBtn = document.getElementById('submitBtn');
+  const thankYou = document.getElementById('thank-you');
+
+  // Name: only Unicode letters & spaces, minimum 2 chars
+  const nameRegex = /^[\p{L}\s]{2,}$/u;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const phoneRegex = /^\+?\d{7,15}$/;
+
+  // set min for date input to today (yyyy-mm-dd)
+  (function setDateMin(){
+    const dateEl = document.getElementById('date');
+    const today = new Date();
+    const tzOffset = today.getTimezoneOffset() * 60000;
+    const localISO = (new Date(today - tzOffset)).toISOString().split('T')[0];
+    dateEl.min = localISO;
+    // optional: default to today
+    dateEl.value = localISO;
+  })();
+
+  function showError(el, msg){
+    el.classList.add('is-invalid');
+    const err = document.getElementById(el.id + '-error');
+    if(err) err.textContent = msg;
+  }
+  function clearError(el){
+    el.classList.remove('is-invalid');
+    const err = document.getElementById(el.id + '-error');
+    if(err) err.textContent = '';
+  }
+
+  function validateForm(){
+    let ok = true;
+    const nameEl = document.getElementById('name');
+    const emailEl = document.getElementById('email');
+    const dateEl = document.getElementById('date');
+    const phoneEl = document.getElementById('phone');
+
+    // NAME validation
+    const nameVal = nameEl.value.trim();
+    if(!nameVal){
+      showError(nameEl, 'Name zaroori hai.');
+      ok = false;
+    } else if(!nameRegex.test(nameVal)){
+      showError(nameEl, 'Name mein sirf letters aur spaces chalain. (no digits/symbols)');
+      ok = false;
+    } else {
+      clearError(nameEl);
+    }
+
+    // EMAIL validation
+    const emailVal = emailEl.value.trim();
+    if(!emailVal){
+      showError(emailEl, 'Email zaroori hai.');
+      ok = false;
+    } else if(!emailRegex.test(emailVal)){
+      showError(emailEl, 'Valid email daalein (example: name@mail.com).');
+      ok = false;
+    } else {
+      clearError(emailEl);
+    }
+
+    // DATE validation (must be today or future)
+    const dateVal = dateEl.value;
+    if(!dateVal){
+      showError(dateEl, 'Date select karain.');
+      ok = false;
+    } else {
+      const selected = new Date(dateVal + 'T00:00:00');
+      const today = new Date();
+      // normalize today's date (00:00)
+      const todayNorm = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      if(selected < todayNorm){
+        showError(dateEl, 'Past date allowed nahi — aaj ya future select karo.');
+        ok = false;
+      } else {
+        clearError(dateEl);
+      }
+    }
+
+    // PHONE optional
+    const phoneVal = phoneEl.value.trim();
+    if(phoneVal){
+      if(!phoneRegex.test(phoneVal)){
+        showError(phoneEl, 'Phone valid number hona chahiye (7-15 digits, + optional).');
+        ok = false;
+      } else {
+        clearError(phoneEl);
+      }
+    } else {
+      clearError(phoneEl);
+    }
+
+    return ok;
+  }
+
+  // live validation
+  ['name','email','date','phone'].forEach(id=>{
+    document.getElementById(id).addEventListener('input', validateForm);
+    document.getElementById(id).addEventListener('change', validateForm);
+  });
+
+  form.addEventListener('submit', function(e){
     e.preventDefault();
-    const formData = new FormData(form);
+    if(!validateForm()){
+      const first = form.querySelector('.is-invalid');
+      if(first) first.focus();
+      return;
+    }
 
     submitBtn.disabled = true;
-    submitBtn.textContent = "Submitting...";
+    submitBtn.textContent = 'Submitting...';
 
-    fetch(scriptURL, { method: "POST", body: formData, mode: "no-cors" })
-      .then(() => {
-        form.style.display = "none";
-        thankYou.style.display = "block";
+    const formData = new FormData(form);
+
+    // note: Google Forms needs mode: 'no-cors' for client-side post to formResponse
+    fetch(scriptURL, { method: 'POST', body: formData, mode: 'no-cors' })
+      .then(()=> {
+        form.style.display = 'none';
+        thankYou.style.display = 'block';
       })
-      .catch(() => {
-        alert("❌ Error: Something went wrong. Please try again!");
+      .catch(()=> {
+        alert('❌ Error: Submission failed. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
       });
   });
 </script>
